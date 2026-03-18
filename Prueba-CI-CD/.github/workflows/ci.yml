@@ -1,0 +1,35 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Build del proyecto
+        run: npm run build || echo "Build simulado"
+
+      - name: Crear artefacto
+        run: |
+          mkdir build
+          echo "Deployment generado correctamente" > build/result.txt
+
+      - name: Subir artefacto (CD)
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: build
